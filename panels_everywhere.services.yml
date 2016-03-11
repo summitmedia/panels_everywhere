@@ -1,5 +1,5 @@
 services:
-  panels_everywhere_poc.page_display_variant_subscriber:
+  panels_everywhere.page_display_variant_subscriber:
     class: Drupal\panels_everywhere\EventSubscriber\PanelsEverywherePageDisplayVariantSubscriber
     arguments: ['@entity.manager']
     tags:

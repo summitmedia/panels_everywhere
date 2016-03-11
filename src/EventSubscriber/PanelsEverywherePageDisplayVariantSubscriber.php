@@ -44,26 +44,28 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
    */
   public function onSelectPageDisplayVariant(PageDisplayVariantSelectionEvent $event) {
     $page = $this->entityStorage->load('site_template');
-//    if (!is_object($page)) {
-//      return;
-//    }
-//    foreach ($page->getVariants() as $variant) {
-//      if ($variant instanceof ContextAwareVariantInterface) {
-//        $variant->setContexts($this->getContexts());
-//      }
-//      if ($variant->access()) {
-//        $plugin = $variant->getVariantPlugin();
-//        if ($plugin instanceof PageVariantInterface) {
-//          // This is the most important bit: telling core what variant to use.
-//          // @todo: This won't actually work until we solve issue #2511570, or by
-//          // commenting out the loop in PanelsDisplayVariant::getContextAsTokenData()
-//          $event->setPluginId($plugin->getPluginId());
-//          $event->setPluginConfiguration($plugin->getConfiguration());
-//        }
-//        break;
-//      }
-//
-//    }
+    kint($page);
+    if (!is_object($page) || !$page->get('status')) {
+      return;
+    }
+    foreach ($page->getVariants() as $variant) {
+      kint($variant);
+      if ($variant instanceof ContextAwareVariantInterface) {
+        $variant->setContexts($this->getContexts());
+      }
+      if ($variant->access()) {
+        $plugin = $variant->getVariantPlugin();
+        if ($plugin instanceof PageVariantInterface) {
+          // This is the most important bit: telling core what variant to use.
+          // @todo: This won't actually work until we solve issue #2511570, or by
+          // commenting out the loop in PanelsDisplayVariant::getContextAsTokenData()
+          $event->setPluginId($plugin->getPluginId());
+          $event->setPluginConfiguration($plugin->getConfiguration());
+        }
+        break;
+      }
+
+    }
 //    if ($variant = $page->getExecutable()->selectDisplayVariant()) {
 //      if ($variant instanceof PageVariantInterface) {
 //        // This is the most important bit: telling core what variant to use.
