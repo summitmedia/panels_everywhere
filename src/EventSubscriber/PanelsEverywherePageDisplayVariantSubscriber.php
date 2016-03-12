@@ -47,7 +47,8 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
    */
   public function onSelectPageDisplayVariant(PageDisplayVariantSelectionEvent $event) {
     $page = $this->entityStorage->load('site_template');
-    if (!is_object($page) || !$page->get('status')) {
+    $route_options = $event->getRouteMatch()->getRouteObject()->getOptions();
+    if (!is_object($page) || !$page->get('status') || $route_options['_admin_route']) {
       return;
     }
     foreach ($page->getVariants() as $variant) {
