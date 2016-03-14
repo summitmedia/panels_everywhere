@@ -10,15 +10,6 @@ id: panels_everywhere
 label: 'Panels Everywhere'
 variant: panels_everywhere_variant
 variant_settings:
-  blocks:
-    -
-      id: system_main_block
-      label: 'Main page content'
-      provider: system
-      label_display: 0
-      region: middle
-      weight: '0'
-      context_mapping: {  }
   id: panels_everywhere_variant
   label: null
   weight: 0

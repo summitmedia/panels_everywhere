@@ -61,7 +61,7 @@ class PanelsEverywhereDisplayVariant extends PanelsDisplayVariant implements Pag
    */
   public function build() {
     $main_content_included = NULL;
-
+    $this->setPageTitle($this->title);
     foreach ($this->getRegionAssignments() as $region => $blocks) {
       if (!$blocks) {
         continue;
