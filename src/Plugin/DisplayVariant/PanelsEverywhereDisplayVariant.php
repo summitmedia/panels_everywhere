@@ -32,7 +32,12 @@ class PanelsEverywhereDisplayVariant extends PanelsDisplayVariant implements Pag
    */
   protected $mainContent = [];
 
-  public $title;
+  /**
+   * The title for the display variant.
+   *
+   * @var string
+   */
+  protected $title;
 
   /**
    * Sets the title for the page being rendered.
