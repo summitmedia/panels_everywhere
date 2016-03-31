@@ -53,17 +53,17 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
     }
     foreach ($page->getVariants() as $variant) {
       $access = $this->resolveConditions($variant->getSelectionConditions(), $variant->getSelectionLogic());
-
       if (!$access) {
         continue;
       }
 
       $plugin = $variant->getVariantPlugin();
-      if ($variant->access()) {
+//      kpr($variant->access());
+//      if ($variant->access()) {
         $event->setPluginId($plugin->getPluginId());
         $event->setPluginConfiguration($plugin->getConfiguration());
         $event->setContexts($variant->getContexts());
-      }
+//      }
       break;
     }
   }
