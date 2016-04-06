@@ -54,8 +54,10 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
     if (!is_object($page) || !$page->get('status') || $isAdminRoute) {
       return;
     }
+
     foreach ($page->getVariants() as $variant) {
       $access = $this->resolveConditions($variant->getSelectionConditions(), $variant->getSelectionLogic());
+
       if (!$access) {
         continue;
       }
