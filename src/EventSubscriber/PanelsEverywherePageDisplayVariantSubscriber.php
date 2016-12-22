@@ -9,7 +9,7 @@ namespace Drupal\panels_everywhere\EventSubscriber;
 
 use Drupal\Core\Condition\ConditionAccessResolverTrait;
 use Drupal\Core\Display\ContextAwareVariantInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\PageDisplayVariantSelectionEvent;
 use Drupal\Core\Render\RenderEvents;
 use Drupal\page_manager\Entity\PageVariant;
@@ -23,7 +23,7 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
   /**
    * The entity storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface
    */
   protected $entityStorage;
 
@@ -32,11 +32,11 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
   /**
    * Constructs a new PageManagerRoutes.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager) {
-    $this->entityStorage = $entity_manager->getStorage('page');
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityStorage = $entity_type_manager->getStorage('page');
   }
 
   /**
@@ -47,6 +47,7 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
    */
   public function onSelectPageDisplayVariant(PageDisplayVariantSelectionEvent $event) {
     $page = $this->entityStorage->load('site_template');
+//    $page = $this->entityStorage->load('site_template_microsites');
     $route_options = $event->getRouteMatch()->getRouteObject()->getOptions();
 
     $isAdminRoute = array_key_exists('_admin_route', $route_options) && $route_options['_admin_route'];
@@ -54,9 +55,17 @@ class PanelsEverywherePageDisplayVariantSubscriber implements EventSubscriberInt
     if (!is_object($page) || !$page->get('status') || $isAdminRoute) {
       return;
     }
-
+    /** @var \Drupal\page_manager\Entity\PageVariant $variant */
     foreach ($page->getVariants() as $variant) {
-      $access = $this->resolveConditions($variant->getSelectionConditions(), $variant->getSelectionLogic());
+      $variant_context = $variant->getContexts();
+      /** @var \Drupal\Core\Condition\ConditionPluginCollection $conditions */
+      $conditions = $variant->getSelectionConditions();
+      /** @var  $condition */
+      foreach ($conditions as $condition) {
+        $condition->setContext('user', $variant_context['current_user']);
+      }
+      $access = $this->resolveConditions($conditions, $variant->getSelectionLogic());
+//      $access = $this->resolveConditions($variant->getSelectionConditions(), $variant->getSelectionLogic());
 
       if (!$access) {
         continue;
